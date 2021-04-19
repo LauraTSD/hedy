@@ -24,7 +24,9 @@ commands_per_level = {1: ['print', 'ask', 'echo'] ,
                       12: ['print', 'ask', 'is', 'if', 'for', 'elif'],
                       13: ['print', 'ask', 'is', 'if', 'for', 'elif'],
                       14: ['print', 'ask', 'is', 'if', 'for', 'elif'],
-                      15: ['print', 'ask', 'is', 'if', 'for', 'elif']
+                      15: ['print', 'ask', 'is', 'if', 'for', 'elif'],
+                      16: ['print', 'ask', 'is', 'if', 'for', 'elif'],
+                      17: ['print', 'ask', 'is', 'if', 'for', 'elif']
                       }
 
 # 
@@ -165,6 +167,18 @@ class AllAssignmentCommands(Transformer):
         return args[0].children
     def bigger(self, args):
         return args[0].children
+    def smaller_equal(self, args):
+        return args[0].children
+    def bigger_equal(self, args):
+        return args[0].children
+    def assign_plus(self, args):
+        return args[0].children
+    def assign_minus(self, args):
+        return args[0].children
+    def assign_multiplication(self, args):
+        return args[0].children
+    def assign_divide(self, args):
+        return args[0].children
 
     #list access is accessing a variable, so must be escaped
     def list_access(self, args):
@@ -218,6 +232,18 @@ class Filter(Transformer):
     def smaller(self, args):
         return all_arguments_true(args)
     def bigger(self, args):
+        return all_arguments_true(args)
+    def smaller_equal(self, args):
+        return all_arguments_true(args)
+    def bigger_equal(self, args):
+        return all_arguments_true(args)
+    def assign_plus(self, args):
+        return all_arguments_true(args)
+    def assign_minus(self, args):
+        return all_arguments_true(args)
+    def assign_multiplication(self, args):
+        return all_arguments_true(args)
+    def assign_divide(self, args):
         return all_arguments_true(args)
 
     # level 4 commands
@@ -660,6 +686,88 @@ class ConvertToPython_15(ConvertToPython_14):
         else:
             return f"str({arg0}) > str({arg1}) and {args[2]}"
 
+class ConvertToPython_16(ConvertToPython_15):
+    def smaller_equal(self, args):
+        arg0 = wrap_non_var_in_quotes(args[0], self.lookup)
+        arg1 = wrap_non_var_in_quotes(args[1], self.lookup)
+        if len(args) == 2:
+            return f"str({arg0}) <= str({arg1})"  # no and statements
+        else:
+            return f"str({arg0}) <= str({arg1}) and {args[2]}"
+
+    def bigger_equal(self, args):
+        arg0 = wrap_non_var_in_quotes(args[0], self.lookup)
+        arg1 = wrap_non_var_in_quotes(args[1], self.lookup)
+        if len(args) == 2:
+            return f"str({arg0}) >= str({arg1})"  # no and statements
+        else:
+            return f"str({arg0}) >= str({arg1}) and {args[2]}"
+
+class ConvertToPython_17(ConvertToPython_15):
+    def assign_plus(self, args):
+        if len(args) == 2:
+            parameter = args[0]
+            value = args[1]
+            if type(value) is Tree:
+                return parameter + " += " + value.children
+            else:
+                if "'" in value or 'random.choice' in value:
+                    return parameter + " += " + value
+                else:
+                    return parameter + " += '" + value + "'"
+        else:
+            parameter = args[0]
+            values = args[1:]
+            return parameter + " += [" + ", ".join(values) + "]"
+
+    def assign_minus(self, args):
+        if len(args) == 2:
+            parameter = args[0]
+            value = args[1]
+            if type(value) is Tree:
+                return parameter + " -= " + value.children
+            else:
+                if "'" in value or 'random.choice' in value:
+                    return parameter + " -= " + value
+                else:
+                    return parameter + " -= '" + value + "'"
+        else:
+            parameter = args[0]
+            values = args[1:]
+            return parameter + " -= [" + ", ".join(values) + "]"
+
+    def assign_multiplication(self, args):
+        if len(args) == 2:
+            parameter = args[0]
+            value = args[1]
+            if type(value) is Tree:
+                return parameter + " *= " + value.children
+            else:
+                if "'" in value or 'random.choice' in value:
+                    return parameter + " *= " + value
+                else:
+                    return parameter + " *= '" + value + "'"
+        else:
+            parameter = args[0]
+            values = args[1:]
+            return parameter + " *= [" + ", ".join(values) + "]"
+
+    def assign_divide(self, args):
+        if len(args) == 2:
+            parameter = args[0]
+            value = args[1]
+            if type(value) is Tree:
+                return parameter + " /= " + value.children
+            else:
+                if "'" in value or 'random.choice' in value:
+                    return parameter + " /= " + value
+                else:
+                    return parameter + " /= '" + value + "'"
+        else:
+            parameter = args[0]
+            values = args[1:]
+            return parameter + " /= [" + ", ".join(values) + "]"
+
 # Custom transformer that can both be used bottom-up or top-down
 class ConvertTo():
     def __default_child_call(self, name, children):
@@ -964,6 +1072,12 @@ def transpile_inner(input_string, level):
         return python
     elif level == 15:
         python = ConvertToPython_15(punctuation_symbols, lookup_table).transform(abstract_syntaxtree)
+        return python
+    elif level == 16:
+        python = ConvertToPython_16(punctuation_symbols, lookup_table).transform(abstract_syntaxtree)
+        return python
+    elif level == 17:
+        python = ConvertToPython_17(punctuation_symbols, lookup_table).transform(abstract_syntaxtree)
         return python
 
     #Laura & Thera: hier kun je code voor de nieuwe levels toevoegen
