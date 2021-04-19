@@ -171,13 +171,7 @@ class AllAssignmentCommands(Transformer):
         return args[0].children
     def bigger_equal(self, args):
         return args[0].children
-    def assign_plus(self, args):
-        return args[0].children
-    def assign_minus(self, args):
-        return args[0].children
-    def assign_multiplication(self, args):
-        return args[0].children
-    def assign_divide(self, args):
+    def assign_bool(self, args):
         return args[0].children
 
     #list access is accessing a variable, so must be escaped
@@ -237,13 +231,7 @@ class Filter(Transformer):
         return all_arguments_true(args)
     def bigger_equal(self, args):
         return all_arguments_true(args)
-    def assign_plus(self, args):
-        return all_arguments_true(args)
-    def assign_minus(self, args):
-        return all_arguments_true(args)
-    def assign_multiplication(self, args):
-        return all_arguments_true(args)
-    def assign_divide(self, args):
+    def assign_bool(self, args):
         return all_arguments_true(args)
 
     # level 4 commands
@@ -599,7 +587,7 @@ class ConvertToPython_7(ConvertToPython_6):
                 if "'" in value or 'random.choice' in value: #TODO: should be a call to wrap nonvarargument is quotes!
                     return parameter + " = " + value
                 else:
-                    return parameter + " = '" + value + "'"
+                    return parameter + " = int(" + value + ")"
         else:
             parameter = args[0]
             values = args[1:]
@@ -704,69 +692,13 @@ class ConvertToPython_16(ConvertToPython_15):
             return f"str({arg0}) >= str({arg1}) and {args[2]}"
 
 class ConvertToPython_17(ConvertToPython_15):
-    def assign_plus(self, args):
-        if len(args) == 2:
-            parameter = args[0]
-            value = args[1]
-            if type(value) is Tree:
-                return parameter + " += " + value.children
-            else:
-                if "'" in value or 'random.choice' in value:
-                    return parameter + " += " + value
-                else:
-                    return parameter + " += '" + value + "'"
+    def assign_bool(self, args):
+        parameter = args[0]
+        value = args[1]
+        if(value == "True"|value == "true"):
+            return parameter + " = True"
         else:
-            parameter = args[0]
-            values = args[1:]
-            return parameter + " += [" + ", ".join(values) + "]"
-
-    def assign_minus(self, args):
-        if len(args) == 2:
-            parameter = args[0]
-            value = args[1]
-            if type(value) is Tree:
-                return parameter + " -= " + value.children
-            else:
-                if "'" in value or 'random.choice' in value:
-                    return parameter + " -= " + value
-                else:
-                    return parameter + " -= '" + value + "'"
-        else:
-            parameter = args[0]
-            values = args[1:]
-            return parameter + " -= [" + ", ".join(values) + "]"
-
-    def assign_multiplication(self, args):
-        if len(args) == 2:
-            parameter = args[0]
-            value = args[1]
-            if type(value) is Tree:
-                return parameter + " *= " + value.children
-            else:
-                if "'" in value or 'random.choice' in value:
-                    return parameter + " *= " + value
-                else:
-                    return parameter + " *= '" + value + "'"
-        else:
-            parameter = args[0]
-            values = args[1:]
-            return parameter + " *= [" + ", ".join(values) + "]"
-
-    def assign_divide(self, args):
-        if len(args) == 2:
-            parameter = args[0]
-            value = args[1]
-            if type(value) is Tree:
-                return parameter + " /= " + value.children
-            else:
-                if "'" in value or 'random.choice' in value:
-                    return parameter + " /= " + value
-                else:
-                    return parameter + " /= '" + value + "'"
-        else:
-            parameter = args[0]
-            values = args[1:]
-            return parameter + " /= [" + ", ".join(values) + "]"
+            return parameter + " = False"
 
 # Custom transformer that can both be used bottom-up or top-down
 class ConvertTo():

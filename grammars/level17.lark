@@ -11,12 +11,9 @@ program: _EOL* command (" ")* (_EOL+ command (" ")*)* _EOL* //lines may end on s
          | input
          | for_loop
          | assign_list
+         | assign_bool
          | list_access_var
          | assign  //placing it here means print is will print 'is' and print is Felienne will print 'is Felienne'
-         | assign_plus
-         | assign_minus
-         | assign_multiplication
-         | assign_divide
 
 //we had to drop invalid, I think because of the if-ifelse, but for now it is pretty ok!!
 
@@ -26,14 +23,11 @@ _EOL: "\r"?"\n"
 print : "print(" (quoted_text | list_access | var | sum) (" " (quoted_text | list_access | var | sum))* ")"
 input : var " = input(" (quoted_text) (" " (quoted_text))* ")"
 assign_list: var " = [" quoted_text ((", "|",") quoted_text)+ "]"
+assign_bool: var " = " ("True"|"true"|"False"|"false")
 
 //TODO: sum needs to be expression here too (like in 7 and up)
 
 assign : var " = " sum | var " = " textwithoutspaces | list_access " = " sum | list_access " = " textwithoutspaces
-assign_plus : var " += " sum | var " += " textwithoutspaces | list_access " += " sum | list_access " += " textwithoutspaces
-assign_minus : var " -= " sum | var " -= " textwithoutspaces | list_access " -= " sum | list_access " -= " textwithoutspaces
-assign_multiplication : var " *= " sum | var " *= " textwithoutspaces | list_access " *= " sum | list_access " *= " textwithoutspaces
-assign_divide : var " /= " sum | var " /= " textwithoutspaces | list_access " /= " sum | list_access " /= " textwithoutspaces
 invalid: textwithoutspaces " " textwithspaces
 
 
@@ -43,7 +37,7 @@ ifs: "if " condition ":" _EOL (" "+ command) (_EOL " "+ command)* //'if' cannot 
 elifs: _EOL "elif " condition ":"_EOL (" "+ command) (_EOL " "+ command)*
 
 
-condition: (equality_check|in_list_check|not_equal|smaller|bigger|smaller_equal|bigger_equal) (" and " condition)*
+condition: (equality_check|in_list_check|not_equal|smaller|bigger|smaller_equal|bigger_equal|) (" and " condition)*
 list_access_var : var " = " var "[" (index | random | var) "]"
 equality_check: (textwithoutspaces | list_access) " == " (textwithoutspaces | list_access)
 not_equal: (textwithoutspaces | list_access) " != " (textwithoutspaces | list_access)
