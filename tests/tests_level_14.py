@@ -40,8 +40,8 @@ class TestsLevel14(unittest.TestCase):
     result = hedy.transpile("""nummer = 5
 nummertwee = 6
 print(nummer * nummertwee)""", 14)
-    self.assertEqual("""nummer = '5'
-nummertwee = '6'
+    self.assertEqual("""nummer = int(5)
+nummertwee = int(6)
 print(str(int(nummer) * int(nummertwee)))""", result)
     self.assertEqual(run_code(result), "30")
 
@@ -90,8 +90,8 @@ a = 3
 for a in range(2,4):
   a = a + 2
   b = b + 2""", 14)
-    self.assertEqual(result, """a = '2'
-a = '3'
+    self.assertEqual(result, """a = int(2)
+a = int(3)
 for a in range(int(2), int(4)+1):
   a = int(a) + int(2)
   b = int(b) + int(2)""")
@@ -103,11 +103,11 @@ if a == 1:
   x = 2
 else:
   x = 222""", 14)
-    self.assertEqual(result, """a = '5'
+    self.assertEqual(result, """a = int(5)
 if str(a) == str('1'):
-  x = '2'
+  x = int(2)
 else:
-  x = '222'""")
+  x = int(222)""")
 
   def test_forloop(self):
     result = hedy.transpile("""

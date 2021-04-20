@@ -171,8 +171,6 @@ class AllAssignmentCommands(Transformer):
         return args[0].children
     def bigger_equal(self, args):
         return args[0].children
-    def assign_bool(self, args):
-        return args[0].children
 
     #list access is accessing a variable, so must be escaped
     def list_access(self, args):
@@ -230,8 +228,6 @@ class Filter(Transformer):
     def smaller_equal(self, args):
         return all_arguments_true(args)
     def bigger_equal(self, args):
-        return all_arguments_true(args)
-    def assign_bool(self, args):
         return all_arguments_true(args)
 
     # level 4 commands
@@ -587,7 +583,10 @@ class ConvertToPython_7(ConvertToPython_6):
                 if "'" in value or 'random.choice' in value: #TODO: should be a call to wrap nonvarargument is quotes!
                     return parameter + " = " + value
                 else:
-                    return parameter + " = int(" + value + ")"
+                    if value.isnumeric():
+                        return parameter + " = int(" + value + ")"
+                    else:
+                        return parameter + " = '" + value + "'"
         else:
             parameter = args[0]
             values = args[1:]
@@ -691,14 +690,41 @@ class ConvertToPython_16(ConvertToPython_15):
         else:
             return f"str({arg0}) >= str({arg1}) and {args[2]}"
 
-class ConvertToPython_17(ConvertToPython_15):
-    def assign_bool(self, args):
-        parameter = args[0]
-        value = args[1]
-        if(value == "True"|value == "true"):
-            return parameter + " = True"
+class ConvertToPython_17(ConvertToPython_16):
+    def assign(self, args):
+        if len(args) == 2:
+            parameter = args[0]
+            value = args[1]
+            if type(value) is Tree:
+                return parameter + " = " + value.children
+            else:
+                if "'" in value or 'random.choice' in value:
+                    return parameter + " = " + value
+                else:
+                    if value.isnumeric():
+                        return parameter + " = int(" + value + ")"
+                    elif value == 'true' or value == 'True':
+                        return parameter + " = True"
+                    elif value == 'false' or value == 'False':
+                        return parameter + " = False"
+                    else:
+                        return parameter + " = '" + value + "'"
         else:
-            return parameter + " = False"
+            parameter = args[0]
+            values = args[1:]
+            return parameter + " = [" + ", ".join(values) + "]"
+
+    def equality_check(self, args):
+        arg0 = wrap_non_var_in_quotes(args[0], self.lookup)
+        arg1 = wrap_non_var_in_quotes(args[1], self.lookup)
+        if arg1 == '\'True\'' or arg1 == '\'true\'':
+            return f"{arg0} == True"
+        elif arg1 == '\'False\'' or arg1 == '\'false\'':
+            return f"{arg0} == False"
+        if len(args) == 2:
+            return f"str({arg0}) == str({arg1})" #no and statements
+        else:
+            return f"str({arg0}) == str({arg1}) and {args[2]}"
 
 # Custom transformer that can both be used bottom-up or top-down
 class ConvertTo():

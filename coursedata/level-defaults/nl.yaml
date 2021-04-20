@@ -260,10 +260,10 @@
         example: "Bijvoorbeeld: leeftijd >= 12"
         demo_code: "leeftijd = input('Ik ben 11 jaar, hoe oud ben jij?')\nif leeftijd >= 12:\n    print('Dan ben je ouder dan ik!')"
   17:
-    start_code: "leeg"
-    intro_text: "leeg"
+    start_code: "ja = True\nif ja == True:\n    print('ja')"
+    intro_text: "We gaan nu het hebben over waar en niet waar, je kan een variabele op waar zetten (True) en op niet waar zetten: (False). Dit kan je bijvoorbeeld gebruiken om bij te houden of je al iets heb gedaan."
     commands:
-      - name: "leeg"
-        explanation: "leeg"
-        example: "leeg"
-        demo_code: "leeg"
+      - name: "Voorbeeld"
+        explanation: "Als je dus wilt vergelijken met een = dan"
+        example: "goedantwoord == False"
+        demo_code: "goedantwoord = False\nantwoord = input('Wat is 5*5')\n    if antwoord == 25:\n        goedantwoord = True\n    else:\n        goedantwoord = False\n    if goedantwoord == True:\n        print('Dat is goed!')"

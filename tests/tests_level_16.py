@@ -22,37 +22,37 @@ def run_code(code):
     return out.getvalue().strip()
 
 
-class TestsLevel15(unittest.TestCase):
+class TestsLevel16(unittest.TestCase):
   maxDiff = None
   def test_print(self):
-    result = hedy.transpile("print('ik heet')", 15)
+    result = hedy.transpile("print('ik heet')", 16)
     self.assertEqual("print('ik heet')", result)
 
   def test_print_with_var(self):
-    result = hedy.transpile("naam = Hedy\nprint('ik heet' naam)", 15)
+    result = hedy.transpile("naam = Hedy\nprint('ik heet' naam)", 16)
     self.assertEqual("naam = 'Hedy'\nprint('ik heet'+str(naam))", result)
 
   def test_print_with_calc_no_spaces(self):
-    result = hedy.transpile("print('5 keer 5 is ' 5*5)", 15)
+    result = hedy.transpile("print('5 keer 5 is ' 5*5)", 16)
     self.assertEqual("print('5 keer 5 is '+str(int(5) * int(5)))", result)
 
   def test_print_calculation_times_directly(self):
     result = hedy.transpile("""nummer = 5
 nummertwee = 6
-print(nummer * nummertwee)""", 15)
+print(nummer * nummertwee)""", 16)
     self.assertEqual("""nummer = int(5)
 nummertwee = int(6)
 print(str(int(nummer) * int(nummertwee)))""", result)
     self.assertEqual(run_code(result), "30")
 
   def test_transpile_ask(self):
-    result = hedy.transpile("antwoord = input('wat is je lievelingskleur?')", 15)
+    result = hedy.transpile("antwoord = input('wat is je lievelingskleur?')", 16)
     self.assertEqual(result, "antwoord = input('wat is je lievelingskleur?')")
 
   def test_if_with_indent(self):
     result = hedy.transpile("""naam = Hedy
 if naam == Hedy:
-    print('koekoek')""", 15)
+    print('koekoek')""", 16)
     self.assertEqual("""naam = 'Hedy'
 if str(naam) == str('Hedy'):
   print('koekoek')""", result)
@@ -64,7 +64,7 @@ if antwoord == 20:
     print('Het antwoord was inderdaad ' antwoord)
 else:
     print('Foutje')
-    print('Het antwoord moest zijn ' antwoord)""", 15)
+    print('Het antwoord moest zijn ' antwoord)""", 16)
 
     self.assertEqual("""antwoord = input('Hoeveel is 10 plus 10?')
 if str(antwoord) == str('20'):
@@ -78,7 +78,7 @@ else:
   def test_print_random(self):
     result = hedy.transpile("""keuzes = ['steen', 'schaar', 'papier']
 computerkeuze = keuzes[random]
-print('computer koos ' computerkeuze)""", 15)
+print('computer koos ' computerkeuze)""", 16)
     self.assertEqual("""keuzes = ['steen', 'schaar', 'papier']
 computerkeuze=random.choice(keuzes)
 print('computer koos '+str(computerkeuze))""", result)
@@ -89,7 +89,7 @@ a = 2
 a = 3
 for a in range(2,4):
   a = a + 2
-  b = b + 2""", 15)
+  b = b + 2""", 16)
     self.assertEqual(result, """a = int(2)
 a = int(3)
 for a in range(int(2), int(4)+1):
@@ -102,7 +102,7 @@ a = 5
 if a == 1:
   x = 2
 else:
-  x = 222""", 15)
+  x = 222""", 16)
     self.assertEqual(result, """a = int(5)
 if str(a) == str('1'):
   x = int(2)
@@ -113,7 +113,7 @@ else:
     result = hedy.transpile("""
 for i in range(1, 10):
   print(i)
-print('wie niet weg is is gezien')""", 15)
+print('wie niet weg is is gezien')""", 16)
     self.assertEqual(result, """for i in range(int(1), int(10)+1):
   print(str(i))
 print('wie niet weg is is gezien')""")
@@ -121,7 +121,7 @@ print('wie niet weg is is gezien')""")
   def test_for_nesting(self):
     result = hedy.transpile("""for i in range(1, 3):
   for j in range(1,4):
-    print('rondje: ' i ' tel: ' j)""", 15)
+    print('rondje: ' i ' tel: ' j)""", 16)
     self.assertEqual(result,"""for i in range(int(1), int(3)+1):
   for j in range(int(1), int(4)+1):
     print('rondje: '+str(i)+' tel: '+str(j))""")
@@ -131,7 +131,7 @@ print('wie niet weg is is gezien')""")
 kleurtwee = geel
 if kleur == blauw:
   if kleurtwee == geel:
-    print('Samen is dit groen!')""", 15)
+    print('Samen is dit groen!')""", 16)
     self.assertEqual(result, """kleur = 'blauw'
 kleurtwee = 'geel'
 if str(kleur) == str('blauw'):
@@ -142,7 +142,7 @@ if str(kleur) == str('blauw'):
     result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
 print('Dus jij hebt zo veel verjaardagen gehad:')
 for i in range(0,leeftijd):
-    print(i)""", 15)
+    print(i)""", 16)
     self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
 print('Dus jij hebt zo veel verjaardagen gehad:')
 for i in range(int(0), int(leeftijd)+1):
@@ -150,14 +150,14 @@ for i in range(int(0), int(leeftijd)+1):
 
   def test_list(self):
     result = hedy.transpile("""fruit = ['appel', 'banaan', 'kers']
-print(fruit)""", 15)
+print(fruit)""", 16)
     self.assertEqual(result, """fruit = ['appel', 'banaan', 'kers']
 print(str(fruit))""")
 
   def test_random(self):
     result = hedy.transpile("""fruit = ['banaan', 'appel', 'kers']
 randomfruit = fruit[random]
-print(randomfruit)""", 15)
+print(randomfruit)""", 16)
     self.assertEqual(result, """fruit = ['banaan', 'appel', 'kers']
 randomfruit=random.choice(fruit)
 print(str(randomfruit))""")
@@ -165,7 +165,7 @@ print(str(randomfruit))""")
   def test_specific_access(self):
     result = hedy.transpile("""fruit = ['banaan', 'appel', 'kers']
 eerstefruit = fruit[1]
-print(eerstefruit)""", 15)
+print(eerstefruit)""", 16)
     self.assertEqual(result, """fruit = ['banaan', 'appel', 'kers']
 eerstefruit=fruit[1-1]
 print(str(eerstefruit))""")
@@ -179,7 +179,7 @@ for i in range(1,3):
     scorenu = score[i]
     print('Score is nu ' scorenu)
     if highscore == score[i]:
-        print(highscore)""", 15)
+        print(highscore)""", 16)
     self.assertEqual(result, """score = ['100', '300', '500']
 highscore=random.choice(score)
 print('De highscore is: '+str(highscore))
@@ -195,7 +195,7 @@ if land != Nederland:
     print('Cool!')
 else:
     print('Ik kom ook uit Nederland!')"""
-, 15)
+, 16)
     self.assertEqual(result, """land = input('In welk land woon jij?')
 if str(land) != str('Nederland'):
   print('Cool!')
@@ -207,7 +207,7 @@ else:
 if getal != 5:
     print('Goed zo!')
 else:
-    print('Fout! Je mocht geen 5 zeggen')""", 15)
+    print('Fout! Je mocht geen 5 zeggen')""", 16)
     self.assertEqual(result, """getal = input('Je mag geen 5 zeggen, wat is een leuk getal?')
 if str(getal) != str('5'):
   print('Goed zo!')
@@ -215,32 +215,61 @@ else:
   print('Fout! Je mocht geen 5 zeggen')""")
 
   def test_smaller(self):
-      result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
+    result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
 if leeftijd < 12:
-    print('Dan ben je jonger dan ik!')""", 15)
-      self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
+    print('Dan ben je jonger dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
 if str(leeftijd) < str('12'):
   print('Dan ben je jonger dan ik!')""")
 
   def test_bigger(self):
-      result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
+    result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
 if leeftijd > 12:
-    print('Dan ben je ouder dan ik!')""", 15)
-      self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
+    print('Dan ben je ouder dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
 if str(leeftijd) > str('12'):
   print('Dan ben je ouder dan ik!')""")
 
   def test_big_and_small(self):
-      result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
+    result = hedy.transpile("""leeftijd = input('Hoe oud ben jij?')
 if leeftijd < 12:
     print('Dan ben je jonger dan ik!')
 elif leeftijd > 12:
-    print('Dan ben je ouder dan ik!')""", 15)
-      self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
+    print('Dan ben je ouder dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Hoe oud ben jij?')
 if str(leeftijd) < str('12'):
   print('Dan ben je jonger dan ik!')
 elif str(leeftijd) > str('12'):
   print('Dan ben je ouder dan ik!')""")
+
+  def test_smaller_bigger_equal(self):
+    result = hedy.transpile("""leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if leeftijd <= 11:
+    print('Dan ben je jonger dan ik!')
+elif leeftijd >= 13:
+    print('Dan ben je ouder dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if str(leeftijd) <= str('11'):
+  print('Dan ben je jonger dan ik!')
+elif str(leeftijd) >= str('13'):
+  print('Dan ben je ouder dan ik!')""")
+
+  def test_smaller_equal(self):
+    result = hedy.transpile("""leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if leeftijd <= 11:
+    print('Dan ben je jonger dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if str(leeftijd) <= str('11'):
+  print('Dan ben je jonger dan ik!')""")
+
+  def test_bigger_equal(self):
+    result = hedy.transpile("""leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if leeftijd >= 11:
+    print('Dan ben je ouder dan ik!')""", 16)
+    self.assertEqual(result, """leeftijd = input('Ik ben 12 jaar, hoe oud ben jij?')
+if str(leeftijd) >= str('11'):
+  print('Dan ben je ouder dan ik!')""")
+
 #programs with issues to see if we catch them properly
 # (so this should fail, for now)
 # at one point we want a real "Indent" error and a better error message
